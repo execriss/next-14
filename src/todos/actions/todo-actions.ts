@@ -4,8 +4,18 @@ import prisma from "@/lib/prisma";
 import { Todo } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
+// Funcion para demorar las consultas TEST
+export const sleep = async (seconds: number) => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(true);
+        }, seconds * 1000);
+    })
+}
+
 
 export const toggleTodo = async (id: string, complete: boolean): Promise<Todo> => {
+
     const todo = await prisma.todo.findFirst({ where: { id: id } })
     if (!todo) {
         throw `Todo con el ID: ${id} no encontrado.`
