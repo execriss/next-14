@@ -11,7 +11,7 @@ export default async function DashboardPage() {
     redirect('/api/auth/signin')
   }
   return (
-    <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
+    <div className="grid gap-6 grid-cols-1">
       < WidgetItem title="User Info SERVER-SIDE" >
         <div className="flex flex-col">
           <span>
@@ -23,6 +23,8 @@ export default async function DashboardPage() {
           <span>
             {session.user?.image}
           </span>
+
+          <div className="mt-6">{JSON.stringify(session)}</div>
         </div>
       </ WidgetItem >
     </div>

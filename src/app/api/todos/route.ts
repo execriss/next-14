@@ -1,3 +1,4 @@
+import { getUserServerSession } from "@/auth/actions/authActions";
 import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import * as yup from "yup";
@@ -41,6 +42,11 @@ const postSchema = yup.object({
 });
 
 export async function POST(request: Request) {
+  const user = await getUserServerSession();
+  if (!user) {
+    return NextResponse.json('No autorizado', { status: 401 })
+  }
+
   try {
     // Usar el esquema de validacion
     const { description, complete } = await postSchema.validate(
@@ -50,6 +56,7 @@ export async function POST(request: Request) {
       data: {
         complete,
         description,
+        userId: user.id
       },
     });
 
@@ -60,8 +67,13 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const user = await getUserServerSession();
+  if (!user) {
+    return NextResponse.json('No autorizado', { status: 401 })
+  }
+
   try {
-    const deletedTodos = await prisma.todo.deleteMany({ where: { complete: true } });
+    const deletedTodos = await prisma.todo.deleteMany({ where: { complete: true, userId: user.id } });
 
     return NextResponse.json({ message: 'Tareas completadas eliminadas', deletedTodos });
   } catch (error) {
